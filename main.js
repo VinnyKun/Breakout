@@ -4,23 +4,23 @@ var canvasContext;
 
 var ball = {
 
-	x: 250,
+	x: 3000,
 
-	y: 300,
+	y: 250,
 
-	speedXAxis:5,
+	speedXAxis: 6,
 
-	speedYAxis: 5,
+	speedYAxis: 6,
 }
 
 
 var bat = {
 
-	x: 250,
+	x: 300,
 
-	y: 540,
+	y: 470,
 
-	width: 75,
+	width: 100,
 
 	length: 10,
 }
@@ -77,19 +77,38 @@ var ballMovement = function () {
 
 
 	//when ball hit the sides of the canvas, it will bounce off in the opposite x direction
-	if (ball.x == canvas.width || ball.x == 0) {
+	if (ball.x < canvas.width - 1) {
 	ball.speedXAxis = -ball.speedXAxis
 	}
 
+	if (ball.x > 1) {
+		ball.speedXAxis = -ball.speedXAxis;
+	}
 
-	if (ball.y == 0) {
+
+	////when ball hit the top of the canvas, it will bounce off in the opposite y direction
+	if (ball.y < 1) {
 	ball.speedYAxis = -ball.speedYAxis
 	}
 
-	if (ball.y == canvas.height) {
+	if (ball.y > canvas.height) {
 
+		//ball reset in the center if ball is lost
 		ball.x = canvas.width/2;
 		ball.y = canvas.height/2;
+	}
+
+
+	if (ball.y > bat.y &&
+		ball.y < bat.y + bat.length &&
+		ball.x > bat.x &&
+		ball.x < bat.x + bat.width ) {
+
+		ball.speedYAxis = -ball.speedYAxis
+
+		//difference between ball centre and bat centre
+		var differenceX = ball.x - (bat.x + bat.width/2)
+		ball.speedXAxis = differenceX * 0.20;
 	}
 
 
