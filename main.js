@@ -27,14 +27,16 @@ var bat = {
 
 var block = {
 
-	widthX: 75,
+	widthX: 50,
 
 	lengthY: 20,
 
-	number: 8,
+	columns: 12,
+
+	rows: 11,
 }
 
-var blockGrid = [ true, true, true true, true, true, true, true ];
+var blockGrid = new Array (block.columns * block.rows);
 
 
 window.onload = function () {
@@ -67,7 +69,9 @@ window.onload = function () {
 		//this attaches the mouse's x coordinates to bat's centre
 		bat.x = mouseXPosition - bat.widthX/2
 
-	})	
+	})
+
+	blockReset();	
 
 }
 
@@ -75,17 +79,17 @@ var ballMovement = function () {
 
 	//basic ball movement is both X and Y axis
 	ball.y += ball.speedYAxis;
-	console.log(ball.YPosition)
+	console.log(ball.y)
 	ball.x += ball.speedXAxis;
-	console.log(ball.YPosition)
+	console.log(ball.x)
 
 
 	//when ball hit the sides of the canvas, it will bounce off in the opposite x direction
-	if (ball.x < canvas.width - 5) {
+	if (ball.x <= canvas.width - 5) {
 	ball.speedXAxis = -ball.speedXAxis
 	}
 
-	if (ball.x > 5) {
+	if (ball.x >= 5) {
 		ball.speedXAxis = -ball.speedXAxis;
 	}
 
@@ -104,7 +108,17 @@ var ballMovement = function () {
 		ball.speedYAxis = ball.speedYAxis;
 	}
 
+	//when ball hits a block
+	var ballBlockColumn = Math.floor(ball.x / block.widthX)
+	var ballBlockRow = Math.floor(ball.y / block.lengthY)
+	var hitBlockIndex = block.columns * ballBlockRow + ballBlockColumn
 
+	if (hitBlockIndex >= 0 && hitBlockIndex < block.columns * block.rows) {
+		blockGrid[hitBlockIndex] = false;
+	}
+
+
+	//when ball hits bat
 	if (ball.y > bat.y &&
 		ball.y < bat.y + bat.lengthY &&
 		ball.x > bat.x - 10 &&
@@ -162,43 +176,45 @@ var gameParts = function () {
 	// to ensure that function is working
 	console.log('ball in play')
 
-	drawBlocks(0, '#00ff24');
-
-
+	
+	drawBlocks();
 }
 
-var drawBlocks = function(row, color)	{
+
+var drawBlocks = function()	{
 
 	//the block rectangle is coloured
-	canvasContext.fillStyle = (color);
+	canvasContext.fillStyle = ('#00ff24');
 
-	
-	canvasContext.fillRect(block.widthX * 0, row * 25 + 1, block.widthX - 2, block.lengthY) 
+	for (var rowNumber = 0; rowNumber < block.rows; rowNumber++) {
 
-	
-	canvasContext.fillRect(block.widthX * 1, row * 25 + 1, block.widthX - 2, block.lengthY)
+		for (var columnNumber = 0; columnNumber < block.columns; columnNumber++) {
 
-	
-	canvasContext.fillRect(block.widthX * 2, row * 25 + 1, block.widthX - 2, block.lengthY)
+			//every block will have a unique index(left to right reset left to right)
+			var index = block.columns * rowNumber + columnNumber
 
-	
-	canvasContext.fillRect(block.widthX * 3, row * 25 + 1, block.widthX - 2, block.lengthY)
+			if (blockGrid[index]) {
+				canvasContext.fillRect(block.widthX * columnNumber, rowNumber * block.lengthY, block.widthX - 2, block.lengthY -1) 
+			}
+		}	
 
-	
-	canvasContext.fillRect(block.widthX * 4, row * 25 + 1, block.widthX - 2, block.lengthY)
-
-	
-	canvasContext.fillRect(block.widthX * 5, row * 25 + 1, block.widthX - 2, block.lengthY)
-
-
-	canvasContext.fillRect(block.widthX * 6, row * 25 + 1, block.widthX - 2, block.lengthY)
-
-
-	canvasContext.fillRect(block.widthX * 7, row * 25 + 1, block.widthX , block.lengthY)
-
-
+	}
 
 	//to ensure function is working
 	console.log('blocks in place!')  
-
 }
+
+
+var blockReset = function () {
+	
+	for (var i = 0; i < block.columns * block.rows; i++) {
+		blockGrid[i] = true;
+	}
+
+	// blockGrid[102] = false;
+}
+
+
+
+
+
