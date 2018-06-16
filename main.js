@@ -20,10 +20,22 @@ var bat = {
 
 	y: 470,
 
-	width: 100,
+	widthX: 80,
 
-	length: 10,
+	lengthY: 10,
 }
+
+var block = {
+
+	widthX: 75,
+
+	lengthY: 20,
+
+	number: 8,
+}
+
+var blockGrid = [ true, true, true true, true, true, true, true ];
+
 
 window.onload = function () {
 
@@ -32,14 +44,6 @@ window.onload = function () {
 
 	//this gives 2D rendering context for the canvas
 	canvasContext = canvas.getContext('2d')
-
-	//the canvas/'field' is colored
-	canvasContext.fillStyle = ('#34304c');
-
-	//x,y,width,height: cover entire canvas, fillRect draws a rectangle
-	canvasContext.fillRect(0, 0, canvas.width, canvas.height) 
-
-	console.log('field is ready!')
 
 	
 	setInterval(function () {	
@@ -58,10 +62,10 @@ window.onload = function () {
 		
 		// this returns the postion of mouse in the x-axis
 		//regardless of the position of the of canvas relative to body/scroll 
-		var mouseXPosition = event.clientX - rect.left - wholeBody.scrollLeft;
+		mouseXPosition = event.clientX - rect.left - wholeBody.scrollLeft;
 
 		//this attaches the mouse's x coordinates to bat's centre
-		bat.x = mouseXPosition - bat.width/2
+		bat.x = mouseXPosition - bat.widthX/2
 
 	})	
 
@@ -77,11 +81,11 @@ var ballMovement = function () {
 
 
 	//when ball hit the sides of the canvas, it will bounce off in the opposite x direction
-	if (ball.x < canvas.width - 1) {
+	if (ball.x < canvas.width - 5) {
 	ball.speedXAxis = -ball.speedXAxis
 	}
 
-	if (ball.x > 1) {
+	if (ball.x > 5) {
 		ball.speedXAxis = -ball.speedXAxis;
 	}
 
@@ -96,19 +100,21 @@ var ballMovement = function () {
 		//ball reset in the center if ball is lost
 		ball.x = canvas.width/2;
 		ball.y = canvas.height/2;
+		ball.speedXAxis = 0
+		ball.speedYAxis = ball.speedYAxis;
 	}
 
 
 	if (ball.y > bat.y &&
-		ball.y < bat.y + bat.length &&
-		ball.x > bat.x &&
-		ball.x < bat.x + bat.width ) {
+		ball.y < bat.y + bat.lengthY &&
+		ball.x > bat.x - 10 &&
+		ball.x < bat.x + bat.widthX + 10 ) {
 
 		ball.speedYAxis = -ball.speedYAxis
 
 		//difference between ball centre and bat centre
-		var differenceX = ball.x - (bat.x + bat.width/2)
-		ball.speedXAxis = differenceX * 0.20;
+		var differenceX = ball.x - (bat.x + bat.widthX/2)
+		ball.speedXAxis = differenceX * 0.3;
 	}
 
 
@@ -116,32 +122,34 @@ var ballMovement = function () {
 
 
 
-var gameParts = function () {
-
+var gameParts = function () {	
+	
 	//the canvas/'field' is colored
 	canvasContext.fillStyle = ('#34304c');
 
 	//x,y,width,height: cover entire canvas, fillRect draws a rectangle
 	canvasContext.fillRect(0, 0, canvas.width, canvas.height) 
 
+	console.log('field is ready!')
+
+
 	
-	//the player keeper rectangle is coloured white
+	//the player bat rectangle is coloured white
 	canvasContext.fillStyle = ('#5a9d45');
 
 	//x,y,width,height: position , fillRect draws a rectangle
-	canvasContext.fillRect(bat.x, bat.y, bat.width, bat.length) 
+	canvasContext.fillRect(bat.x, bat.y, bat.widthX, bat.lengthY) 
 	
 	//to ensure function is working
 	console.log('at bat!') 
 
 
 
-
 	
 	//the ball is coloured:
-	canvasContext.fillStyle = ('00ff24')
+	canvasContext.fillStyle = ('00820c')
 
-	//no arcfill so this helps fill colour
+	//no arcfill so beginPath function is needed to fill colour
 	canvasContext.beginPath();
 	
 	//(x,y,radius,angle, radians: ball position and size.
@@ -152,6 +160,45 @@ var gameParts = function () {
 	canvasContext.fill();
 
 	// to ensure that function is working
-	console.log('ball in play') 
+	console.log('ball in play')
 
-}	
+	drawBlocks(0, '#00ff24');
+
+
+}
+
+var drawBlocks = function(row, color)	{
+
+	//the block rectangle is coloured
+	canvasContext.fillStyle = (color);
+
+	
+	canvasContext.fillRect(block.widthX * 0, row * 25 + 1, block.widthX - 2, block.lengthY) 
+
+	
+	canvasContext.fillRect(block.widthX * 1, row * 25 + 1, block.widthX - 2, block.lengthY)
+
+	
+	canvasContext.fillRect(block.widthX * 2, row * 25 + 1, block.widthX - 2, block.lengthY)
+
+	
+	canvasContext.fillRect(block.widthX * 3, row * 25 + 1, block.widthX - 2, block.lengthY)
+
+	
+	canvasContext.fillRect(block.widthX * 4, row * 25 + 1, block.widthX - 2, block.lengthY)
+
+	
+	canvasContext.fillRect(block.widthX * 5, row * 25 + 1, block.widthX - 2, block.lengthY)
+
+
+	canvasContext.fillRect(block.widthX * 6, row * 25 + 1, block.widthX - 2, block.lengthY)
+
+
+	canvasContext.fillRect(block.widthX * 7, row * 25 + 1, block.widthX , block.lengthY)
+
+
+
+	//to ensure function is working
+	console.log('blocks in place!')  
+
+}
