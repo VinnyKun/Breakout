@@ -2,16 +2,20 @@ var canvas;
 
 var canvasContext;
 
-var ball = {
+var block = {
 
-	x: 3000,
+	widthX: 50,
 
-	y: 250,
+	lengthY: 20,
 
-	speedXAxis: 6,
+	columns: 12,
 
-	speedYAxis: 6,
+	rows: 14,
+
+	remaining: 0,
 }
+
+var blockGrid = new Array (block.columns * block.rows);
 
 
 var bat = {
@@ -25,18 +29,20 @@ var bat = {
 	lengthY: 10,
 }
 
-var block = {
 
-	widthX: 50,
 
-	lengthY: 20,
+var ball = {
 
-	columns: 12,
+	x: bat.x,
 
-	rows: 11,
+	y: bat.y - 20,
+
+	speedXAxis: 6,
+
+	speedYAxis: 6,
+
+	remaining: 5
 }
-
-var blockGrid = new Array (block.columns * block.rows);
 
 
 window.onload = function () {
@@ -71,52 +77,50 @@ window.onload = function () {
 
 	})
 
-	blockReset();	
+	blockReset();
+	// gameOver();	
 
 }
 
-var ballMovement = function () {
 
-	//basic ball movement is both X and Y axis
-	ball.y += ball.speedYAxis;
-	console.log(ball.y)
-	ball.x += ball.speedXAxis;
-	console.log(ball.x)
-
-
-	//when ball hit the sides of the canvas, it will bounce off in the opposite x direction
-	if (ball.x <= canvas.width - 5) {
-	ball.speedXAxis = -ball.speedXAxis
-	}
-
-	if (ball.x >= 5) {
-		ball.speedXAxis = -ball.speedXAxis;
-	}
-
-
-	////when ball hit the top of the canvas, it will bounce off in the opposite y direction
-	if (ball.y < 1) {
-	ball.speedYAxis = -ball.speedYAxis
-	}
-
-	if (ball.y > canvas.height) {
-
-		//ball reset in the center if ball is lost
-		ball.x = canvas.width/2;
-		ball.y = canvas.height/2;
-		ball.speedXAxis = 0
-		ball.speedYAxis = ball.speedYAxis;
-	}
+var ballBlockCollision = function () {
 
 	//when ball hits a block
-	var ballBlockColumn = Math.floor(ball.x / block.widthX)
-	var ballBlockRow = Math.floor(ball.y / block.lengthY)
-	var hitBlockIndex = block.columns * ballBlockRow + ballBlockColumn
+	var ballBlockColumnPosition = Math.floor(ball.x / block.widthX)
+	var ballBlockRowPosition = Math.floor(ball.y / block.lengthY)
+	var hitBlockIndex = block.columns * ballBlockRowPosition + ballBlockColumnPosition
 
-	if (hitBlockIndex >= 0 && hitBlockIndex < block.columns * block.rows) {
-		blockGrid[hitBlockIndex] = false;
+	if (ballBlockRowPosition >= 0 && ballBlockRowPosition < block.rows &&
+		ballBlockColumnPosition >= 0 && ballBlockColumnPosition < block.columns) {
+		
+		if(blockGrid[hitBlockIndex]) {
+			blockGrid[hitBlockIndex] = false;
+			block.remaining -= 1
+
+			//to show decreasing blocks on the screen
+			var blocks = document.querySelector('#blocks')
+			blocks.innerHTML = block.remaining
+			if (block.remaining == 0) {
+				alert('gameOver!')
+			}
+			
+			var previousBallX = ball.x - ball.speedXAxis;
+			var previousBallY = ball.y - ball.speedYAxis;
+			var previousballBlockColumnPosition = Math.floor(previousBallX / block.widthX);
+			var previousballBlockRowPosition = Math.floor(previousBallY / block.lengthY);
+
+			if (previousballBlockColumnPosition != ballBlockColumnPosition) {
+				ball.speedXAxis = -ball.speedXAxis
+			}	
+
+			if (previousballBlockRowPosition != previousballBlockColumnPosition) {
+				ball.speedYAxis = -ball.speedYAxis
+			}	
+		}	
 	}
+}
 
+var ballBatCollision = function () {
 
 	//when ball hits bat
 	if (ball.y > bat.y &&
@@ -128,7 +132,55 @@ var ballMovement = function () {
 
 		//difference between ball centre and bat centre
 		var differenceX = ball.x - (bat.x + bat.widthX/2)
-		ball.speedXAxis = differenceX * 0.3;
+		ball.speedXAxis = differenceX * 0.25;
+	}
+
+
+}
+
+var ballMovement = function () {
+
+	ballBlockCollision();
+	ballBatCollision();
+	
+	var balls = document.querySelector('#balls')
+	balls.innerHTML = ball.remaining
+
+	//when ball hit the sides of the canvas, it will bounce off in the opposite x direction
+	if (ball.x > canvas.width - 5) {
+	ball.speedXAxis = -ball.speedXAxis
+	}
+
+	if (ball.x < 5) {
+		ball.speedXAxis = -ball.speedXAxis;
+	}
+
+	//basic ball movement is both X and Y axis
+	ball.y += ball.speedYAxis;
+	console.log(ball.y)
+	ball.x += ball.speedXAxis;
+	console.log(ball.x)
+
+
+	////when ball hit the top of the canvas, it will bounce off in the opposite y direction
+	if (ball.y < 1) {
+	ball.speedYAxis = -ball.speedYAxis
+	}
+
+	if (ball.y > canvas.height) {
+
+		ball.remaining -= 1
+		console.log('balls:' + ball.remaining)
+		balls.innerHTML = ball.remaining
+		//ball reset in the center if ball is lost
+		ball.x = canvas.width/2
+		ball.y = canvas.height/2;
+		ball.speedXAxis = 0;
+		ball.speedYAxis = ball.speedYAxis;
+
+		if (ball.remaining == 0) {
+			alert('gameOver!')
+		}
 	}
 
 
@@ -177,6 +229,7 @@ var gameParts = function () {
 	console.log('ball in play')
 
 	
+	
 	drawBlocks();
 }
 
@@ -195,10 +248,11 @@ var drawBlocks = function()	{
 
 			if (blockGrid[index]) {
 				canvasContext.fillRect(block.widthX * columnNumber, rowNumber * block.lengthY, block.widthX - 2, block.lengthY -1) 
-			}
-		}	
+			}//drawing of one block of a row column by column
 
-	}
+		}// of column count per row	
+
+	} //end of row count
 
 	//to ensure function is working
 	console.log('blocks in place!')  
@@ -206,14 +260,24 @@ var drawBlocks = function()	{
 
 
 var blockReset = function () {
-	
-	for (var i = 0; i < block.columns * block.rows; i++) {
-		blockGrid[i] = true;
-	}
+	block.remaining = 0
+	var i;
 
+	// for (i = 0; i < block.columns * 13; i++) {
+	// 	blockGrid[i] = false;
+
+	//}//to empty out first two rows to create some wall action
+	
+	for (i = block.columns * 0; i < block.columns * block.rows; i++) {
+		blockGrid[i] = true;
+		block.remaining += 1
+	}// to show the remaining rows
+
+	var blocks = document.querySelector('#blocks')
+	blocks.innerHTML = block.remaining
+	
 	// blockGrid[102] = false;
 }
-
 
 
 

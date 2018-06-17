@@ -4,13 +4,38 @@ body {
 
 h1 {
 	font-family: 'Orbitron', sans-serif;
-	color: white;
+	color: #00ff24;
 	text-align: center;
 }
 
 #display {
-	border: 5px solid white;
+/*	border: 5px solid white;*/
 	margin-left: auto;
     margin-right: auto;
     display: block;
+}
+
+p {
+
+	display: inline;
+}
+
+#sb1 {
+
+	display: inline;
+	margin-right: 150px;
+}
+
+#sb2 {
+
+	display: inline;
+	margin-left: 150px;
+}
+
+.scoreboard {
+	color: #00ff24;
+	font-family: 'Orbitron', sans-serif;
+	text-align: center;
+	margin-bottom: 10px;
+	font-size: 20px
 }
