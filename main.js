@@ -107,7 +107,11 @@ var ballBlockCollision = function () {
 			var blocks = document.querySelector('#blocks')
 			blocks.innerHTML = block.remaining
 			if (block.remaining == 0) {
-				alert('gameOver!')
+				//alert('gameOver!')
+
+				ball.speedYAxis = 0;
+				ball.speedXAxis = 0;
+				toggleModal()
 			}
 			
 			//after collision ball flight:
@@ -189,8 +193,10 @@ var ballMovement = function () {
 		ball.speedYAxis = ball.speedYAxis;
 
 		if (ball.remaining == 0) {
-			alert('gameOver!')
-			//toggleModal()
+			//alert('gameOver!')
+			ball.speedYAxis = 0;
+			ball.speedXAxis = 0;
+			toggleModal()
 		}
 	}
 
@@ -293,12 +299,12 @@ var blockReset = function () {
 
 var toggleModal = function() {
 
-	var modal = document.querySelector(".modal-win");
+	var modal = document.querySelector(".modal");
 
-	var closeButton = document.querySelector(".close-button");	
         
     modal.classList.toggle("show-modal");
-
-    }
+    
+         
+}
 
 
