@@ -99,6 +99,10 @@ var ballBlockCollision = function () {
 		//if the block hit is 'present' or true, it will turn false and 'cease to exist'
 		if(blockGrid[hitBlockIndex]) {
 			blockGrid[hitBlockIndex] = false;
+
+			//sound upon hit: currenty off
+			//blockSoundPlay();
+			//playSound('#blockHit');
 			
 			//once false block count must be reduced
 			block.remaining -= 1
@@ -109,8 +113,10 @@ var ballBlockCollision = function () {
 			if (block.remaining == 0) {
 				//alert('gameOver!')
 
+				//stop ball movement when gameover
 				ball.speedYAxis = 0;
 				ball.speedXAxis = 0;
+				//display modal when gameover
 				toggleModal()
 			}
 			
@@ -176,15 +182,15 @@ var ballMovement = function () {
 
 	//basic ball movement is both X and Y axis
 	ball.y += ball.speedYAxis;
-	console.log(ball.y)
+	//console.log(ball.y)
 	ball.x += ball.speedXAxis;
-	console.log(ball.x)
+	//console.log(ball.x)
 
 
 	if (ball.y > canvas.height) {
 
 		ball.remaining -= 1
-		console.log('balls:' + ball.remaining)
+		//console.log('balls:' + ball.remaining)
 		balls.innerHTML = ball.remaining
 		//ball reset in the center if ball is lost
 		ball.x = bat.x + bat.widthX/2;
@@ -194,8 +200,12 @@ var ballMovement = function () {
 
 		if (ball.remaining == 0) {
 			//alert('gameOver!')
+			
+			//stop ball movement when gameover
 			ball.speedYAxis = 0;
 			ball.speedXAxis = 0;
+			
+			//display gameover modal
 			toggleModal()
 		}
 	}
@@ -213,7 +223,7 @@ var gameParts = function () {
 	//x,y,width,height: cover entire canvas, fillRect draws a rectangle
 	canvasContext.fillRect(0, 0, canvas.width, canvas.height) 
 
-	console.log('field is ready!')
+	//console.log('field is ready!')
 
 
 	
@@ -224,7 +234,7 @@ var gameParts = function () {
 	canvasContext.fillRect(bat.x, bat.y, bat.widthX, bat.lengthY) 
 	
 	//to ensure function is working
-	console.log('at bat!') 
+	//onsole.log('at bat!') 
 
 
 
@@ -243,7 +253,7 @@ var gameParts = function () {
 	canvasContext.fill();
 
 	// to ensure that function is working
-	console.log('ball in play')
+	//console.log('ball in play')
 
 	
 	
@@ -272,7 +282,7 @@ var drawBlocks = function()	{
 	} //end of row count
 
 	//to ensure function is working
-	console.log('blocks in place!')  
+	//console.log('blocks in place!')  
 }
 
 
@@ -306,5 +316,51 @@ var toggleModal = function() {
     
          
 }
+
+// var playSound = function(soundID) {
+
+// 	var SoundSelectedByID = document.querySelector(soundID)
+		
+// 	SoundSelectedByID.play();
+// }
+
+// playSound('#blockHit');
+
+// playSound('#batHit');
+
+
+// var blockSound = new Audio ('blockhit.mp3')
+
+// var blockSoundPlay = function () { 
+
+// 	blockSound.play();
+
+//  }	
+
+// var batSound = new Audio ('batHitBall.mp3')
+
+// var batkSoundPlay = function () { 
+
+// 	batSound.play();
+
+// }	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
