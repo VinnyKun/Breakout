@@ -78,23 +78,29 @@ window.onload = function () {
 	})
 
 	blockReset();
-	// gameOver();	
+
 
 }
 
 
 var ballBlockCollision = function () {
 
-	//when ball hits a block
+	// X Y position of a particular block hit by ball
 	var ballBlockColumnPosition = Math.floor(ball.x / block.widthX)
 	var ballBlockRowPosition = Math.floor(ball.y / block.lengthY)
+
+	//pinpoint which block was hit
 	var hitBlockIndex = block.columns * ballBlockRowPosition + ballBlockColumnPosition
 
+	//first conditional that the block must exist within defined blocks and rows
 	if (ballBlockRowPosition >= 0 && ballBlockRowPosition < block.rows &&
 		ballBlockColumnPosition >= 0 && ballBlockColumnPosition < block.columns) {
 		
+		//if the block hit is 'present' or true, it will turn false and 'cease to exist'
 		if(blockGrid[hitBlockIndex]) {
 			blockGrid[hitBlockIndex] = false;
+			
+			//once false block count must be reduced
 			block.remaining -= 1
 
 			//to show decreasing blocks on the screen
@@ -104,19 +110,23 @@ var ballBlockCollision = function () {
 				alert('gameOver!')
 			}
 			
+			//after collision ball flight:
+			//first locate ball's previous location
 			var previousBallX = ball.x - ball.speedXAxis;
 			var previousBallY = ball.y - ball.speedYAxis;
-			var previousballBlockColumnPosition = Math.floor(previousBallX / block.widthX);
-			var previousballBlockRowPosition = Math.floor(previousBallY / block.lengthY);
+			var previousBallBlockColumnPosition = Math.floor(previousBallX / block.widthX);
+			var previousBallBlockRowPosition = Math.floor(previousBallY / block.lengthY);
 
-			if (previousballBlockColumnPosition != ballBlockColumnPosition) {
+			//if ball was in the same column its speed in x axis will not be affected
+			if (previousBallBlockColumnPosition != ballBlockColumnPosition) {
 				ball.speedXAxis = -ball.speedXAxis
 			}	
 
-			if (previousballBlockRowPosition != previousballBlockColumnPosition) {
+			//if ball was in the same row its speed in the Y axis will not be affected
+			if (previousBallBlockRowPosition != ballBlockRowPosition) {
 				ball.speedYAxis = -ball.speedYAxis
 			}	
-		}	
+		}				
 	}
 }
 
@@ -147,12 +157,17 @@ var ballMovement = function () {
 	balls.innerHTML = ball.remaining
 
 	//when ball hit the sides of the canvas, it will bounce off in the opposite x direction
-	if (ball.x > canvas.width - 5) {
+	if (ball.x > canvas.width - 5  && ball.speedXAxis > 0.0) {
 	ball.speedXAxis = -ball.speedXAxis
 	}
 
-	if (ball.x < 5) {
+	if (ball.x < 5 && ball.speedXAxis < 0.0) {
 		ball.speedXAxis = -ball.speedXAxis;
+	}
+
+	//when ball hit the top of the canvas, it will bounce off in the opposite y direction
+	if (ball.y < 1 && ball.speedYAxis < 0.0) {
+	ball.speedYAxis = -ball.speedYAxis
 	}
 
 	//basic ball movement is both X and Y axis
@@ -162,24 +177,20 @@ var ballMovement = function () {
 	console.log(ball.x)
 
 
-	////when ball hit the top of the canvas, it will bounce off in the opposite y direction
-	if (ball.y < 1) {
-	ball.speedYAxis = -ball.speedYAxis
-	}
-
 	if (ball.y > canvas.height) {
 
 		ball.remaining -= 1
 		console.log('balls:' + ball.remaining)
 		balls.innerHTML = ball.remaining
 		//ball reset in the center if ball is lost
-		ball.x = canvas.width/2
-		ball.y = canvas.height/2;
+		ball.x = bat.x + bat.widthX/2;
+		ball.y = bat.y - 20;
 		ball.speedXAxis = 0;
 		ball.speedYAxis = ball.speedYAxis;
 
 		if (ball.remaining == 0) {
 			alert('gameOver!')
+			//toggleModal()
 		}
 	}
 
@@ -268,7 +279,7 @@ var blockReset = function () {
 
 	//}//to empty out first two rows to create some wall action
 	
-	for (i = block.columns * 0; i < block.columns * block.rows; i++) {
+	for (i = block.columns * 3; i < block.columns * block.rows; i++) {
 		blockGrid[i] = true;
 		block.remaining += 1
 	}// to show the remaining rows
@@ -280,5 +291,14 @@ var blockReset = function () {
 }
 
 
+var toggleModal = function() {
+
+	var modal = document.querySelector(".modal-win");
+
+	var closeButton = document.querySelector(".close-button");	
+        
+    modal.classList.toggle("show-modal");
+
+    }
 
 
