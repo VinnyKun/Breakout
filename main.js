@@ -194,7 +194,7 @@ var ballMovement = function () {
 		balls.innerHTML = ball.remaining
 		//ball reset in the center if ball is lost
 		ball.x = bat.x + bat.widthX/2;
-		ball.y = bat.y - 20;
+		ball.y = bat.y - 5;
 		ball.speedXAxis = 0;
 		ball.speedYAxis = ball.speedYAxis;
 
@@ -295,7 +295,7 @@ var blockReset = function () {
 
 	//}//to empty out first two rows to create some wall action
 	
-	for (i = block.columns * 3; i < block.columns * block.rows; i++) {
+	for (i = block.columns * 2; i < block.columns * block.rows; i++) {
 		blockGrid[i] = true;
 		block.remaining += 1
 	}// to show the remaining rows
@@ -317,33 +317,33 @@ var toggleModal = function() {
          
 }
 
-// var playSound = function(soundID) {
+var playSound = function(soundID) {
 
-// 	var SoundSelectedByID = document.querySelector(soundID)
+	var SoundSelectedByID = document.querySelector(soundID)
 		
-// 	SoundSelectedByID.play();
-// }
+	SoundSelectedByID.play();
+}
 
-// playSound('#blockHit');
+playSound('#blockHit');
 
-// playSound('#batHit');
+playSound('#batHit');
 
 
-// var blockSound = new Audio ('blockhit.mp3')
+var blockSound = new Audio ('blockhit.mp3')
 
-// var blockSoundPlay = function () { 
+var blockSoundPlay = function () { 
 
-// 	blockSound.play();
+	blockSound.play();
 
-//  }	
+ }	
 
-// var batSound = new Audio ('batHitBall.mp3')
+var batSound = new Audio ('batHitBall.mp3')
 
-// var batkSoundPlay = function () { 
+var batkSoundPlay = function () { 
 
-// 	batSound.play();
+	batSound.play();
 
-// }	
+}	
 
 
 
