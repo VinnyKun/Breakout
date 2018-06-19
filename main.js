@@ -57,7 +57,7 @@ window.onload = function () {
 	setInterval(function () {	
 	gameParts();
 	ballMovement();
-	}, 25);
+	}, 30);
 
 	//event listener to control paddle
 	canvas.addEventListener('mousemove', function(event){
@@ -101,7 +101,7 @@ var ballBlockCollision = function () {
 			blockGrid[hitBlockIndex] = false;
 
 			//sound upon hit: currenty off
-			//blockSoundPlay();
+			blockSoundPlay();
 			//playSound('#blockHit');
 			
 			//once false block count must be reduced
@@ -295,7 +295,7 @@ var blockReset = function () {
 
 	//}//to empty out first two rows to create some wall action
 	
-	for (i = block.columns * 2; i < block.columns * block.rows; i++) {
+	for (i = block.columns * 5; i < block.columns * block.rows; i++) {
 		blockGrid[i] = true;
 		block.remaining += 1
 	}// to show the remaining rows
